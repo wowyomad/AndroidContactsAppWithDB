@@ -1,7 +1,7 @@
 package by.bsuir.vadzim.appwithroom
 
 data class ContactState (
-    val contactlist: List<Contact> = emptyList(),
+    val contacts: List<Contact> = emptyList(),
     val firstName: String = "",
     val lastName: String = "",
     val phoneNumber: String = "",

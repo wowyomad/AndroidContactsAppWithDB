@@ -17,8 +17,8 @@ class ContactViewModel(
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.FIRST_NAME)
     private val _contacts = _sortType
-        .flatMapLatest {sortType ->
-            when(sortType) {
+        .flatMapLatest { sortType ->
+            when (sortType) {
                 SortType.FIRST_NAME -> dao.getContactsOrderedByFirstName()
                 SortType.LAST_NAME -> dao.getContactsOrderedByLastName()
                 SortType.PHONE_NUMBER -> dao.getContactsOrderedByPhoneNumber()
@@ -32,7 +32,7 @@ class ContactViewModel(
     private val _state = MutableStateFlow(ContactState())
     val state = combine(_state, _sortType, _contacts) { state, sortType, contacts ->
         state.copy(
-            contactlist = contacts,
+            contacts = contacts,
             sortType = sortType
         )
     }
@@ -72,7 +72,7 @@ class ContactViewModel(
                 val lastName = state.value.lastName
                 val phoneNumber = state.value.phoneNumber
 
-                if(firstName.isBlank() or lastName.isBlank() or phoneNumber.isBlank())
+                if (firstName.isBlank() or lastName.isBlank() or phoneNumber.isBlank())
                     return
 
                 val contact = Contact(
@@ -84,12 +84,14 @@ class ContactViewModel(
                 viewModelScope.launch {
                     dao.insertContact(contact)
                 }
-                _state.update { it.copy(
-                    isAddingContact = false,
-                    firstName = "",
-                    lastName = "",
-                    phoneNumber = ""
-                ) }
+                _state.update {
+                    it.copy(
+                        isAddingContact = false,
+                        firstName = "",
+                        lastName = "",
+                        phoneNumber = ""
+                    )
+                }
             }
 
             is ContactEvent.SetFirstName -> {
@@ -117,7 +119,8 @@ class ContactViewModel(
             }
 
             is ContactEvent.SortContacts -> {
-                _sortType.value = event.sortType
+                if (_sortType.value != event.sortType)
+                    _sortType.value = event.sortType
             }
         }
     }
