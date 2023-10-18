@@ -3,7 +3,9 @@ package by.bsuir.vadzim.appwithroom
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,5 +44,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     AppWithRoomTheme {
         Greeting("Android")
+    }
+}
+
+@Composable
+fun MyLayout() {
+    Column {
+        Text(text = "Hello, I am a TextView")
+        Button(onClick = {  }) {
+            Text(text = "Hello, I am a Button")
+        }
     }
 }
