@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -61,13 +62,21 @@ fun DatabaseScreen(
             }
         }
     ) { padding ->
+        if(state.isAddingContact) {
+            AddContactDialog(state = state, onEvent = onEvent)
+        }
+
         LazyColumn(
             contentPadding = padding,
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(space = 16.dp)
         ) {
             item {
-                SortTypeBar(state = state, onEvent = onEvent)
+                SortTypeBar(
+                    padding = padding,
+                    state = state,
+                    onEvent = onEvent
+                )
             }
             items(items = state.contacts) { contact ->
                 Row (
@@ -97,8 +106,9 @@ fun DatabaseScreen(
 }
 @Composable
 fun SortTypeBar(
+    padding: PaddingValues,
     state: ContactState,
-    onEvent: (ContactEvent) -> Unit
+    onEvent: (ContactEvent) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -121,9 +131,16 @@ fun SortTypeBar(
                 )
                 Text(text = sortType.name)
             }
-
         }
     }
+}
+
+@Composable
+fun DatabaseColumn(
+    state: ContactState,
+    onEvent: (ContactEvent) -> Unit
+) {
+
 }
 
 @Composable
