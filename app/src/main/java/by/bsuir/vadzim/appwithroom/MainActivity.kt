@@ -1,8 +1,10 @@
 package by.bsuir.vadzim.appwithroom
 
 import android.os.Bundle
+import android.text.Editable.Factory
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -25,81 +27,43 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.room.Room
 import by.bsuir.vadzim.appwithroom.ui.theme.AppWithRoomTheme
 
 class MainActivity : ComponentActivity() {
+    private val db by lazy {
+        Room.databaseBuilder(
+            context = applicationContext,
+            klass = ContactDatabase::class.java,
+            name = "contacts.db"
+        ).build()
+    }
+    private val viewModel by viewModels<ContactViewModel> (
+        factoryProducer = {
+            object: ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ContactViewModel(db.dao) as T
+                }
+            }
+        }
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AppWithRoomTheme {
-
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatabaseScreen(
-    state: ContactState,
-    onEvent: (ContactEvent) -> Unit
-) {
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                onEvent(ContactEvent.ShowDialog)
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Content"
-                )
-            }
-        }
-    ) { padding ->
-        if(state.isAddingContact) {
-            AddContactDialog(state = state, onEvent = onEvent)
-        }
-
-        LazyColumn(
-            contentPadding = padding,
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(space = 16.dp)
-        ) {
-            item {
-                SortTypeBar(
-                    padding = padding,
-                    state = state,
-                    onEvent = onEvent
-                )
-            }
-            items(items = state.contacts) { contact ->
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                    ) {
-                        Text(text = "${contact.firstName} ${contact.lastName}",
-                            fontSize = 20.sp)
-                        Text(text = contact.phoneNumber, fontSize = 12.sp)
-                    }
-                    IconButton(onClick = {
-                        onEvent(ContactEvent.DeleteContact(contact))
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Delete Contact"
-                        )
-                    }
-                }
+                val state by viewModel.state.collectAsState()
+                ContactScreen(state = state, onEvent = viewModel::onEvent)
             }
         }
     }
@@ -146,5 +110,5 @@ fun DatabaseColumn(
 @Composable
 @Preview
 fun DatabaseScreenPreview() {
-    val contactViewModel: ContactViewModel = viewModel<ContactViewModel>()
+    val contactViewModel: ContactViewModel
 }

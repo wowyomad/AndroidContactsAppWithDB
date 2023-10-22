@@ -92,6 +92,10 @@ class ContactViewModel(
                         phoneNumber = ""
                     )
                 }
+
+                onEvent(ContactEvent.HideDialog)
+
+
             }
 
             is ContactEvent.SetFirstName -> {
@@ -105,7 +109,7 @@ class ContactViewModel(
             is ContactEvent.SetLastName -> {
                 _state.update {
                     it.copy(
-                        firstName = event.lastName
+                        lastName = event.lastName
                     )
                 }
             }
@@ -113,7 +117,7 @@ class ContactViewModel(
             is ContactEvent.SetPhoneNumber -> {
                 _state.update {
                     it.copy(
-                        firstName = event.phoneNumber
+                        phoneNumber = event.phoneNumber
                     )
                 }
             }
