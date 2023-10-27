@@ -70,8 +70,8 @@ fun AddContactDialog(
                         capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = KeyboardActions (
-                        onNext = { lastNameFocus.requestFocus()}
+                    keyboardActions = KeyboardActions(
+                        onNext = { lastNameFocus.requestFocus() }
                     )
                 )
                 TextField(
@@ -96,8 +96,8 @@ fun AddContactDialog(
                         capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Next
                     ),
-                    keyboardActions = KeyboardActions (
-                        onNext = { phoneNumberFocus.requestFocus()}
+                    keyboardActions = KeyboardActions(
+                        onNext = { phoneNumberFocus.requestFocus() }
                     )
                 )
                 TextField(
@@ -128,7 +128,7 @@ fun AddContactDialog(
                         capitalization = KeyboardCapitalization.Words,
                         imeAction = ImeAction.Done
                     ),
-                    keyboardActions = KeyboardActions (
+                    keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
                         }
